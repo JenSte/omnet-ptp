@@ -1,6 +1,5 @@
-#include "driftsource.h"
-#include "hardwareclock.h"
 #include "storagewindow.h"
+#include "driftsource.h"
 
 StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Driftsource* source)
 	: properties(properties)
@@ -10,8 +9,16 @@ StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Drifts
 
 	std::vector<holdPoint>::iterator it = data.begin();
 
-	it->hardwareTime = simTime();
+	driftVector.setName("drift");
+	timeVector.setName("hardware time");
+
+	simtime_t now = simTime();
+
+	it->realTime = now;
+	it->hardwareTime = now;
 	it->drift = source->nextValue();
+
+	recordVectors(now, now, it->drift);
 
 	fillRange(it + 1, data.end());
 }
@@ -34,9 +41,18 @@ void StorageWindow::fillRange(std::vector<holdPoint>::iterator first, std::vecto
 	while (first != last) {
 		std::vector<holdPoint>::iterator pre = first - 1;
 
+		first->realTime = pre->realTime + properties.tint();
 		first->hardwareTime = pre->hardwareTime + properties.tint() * (1 + pre->drift);
 		first->drift = source->nextValue();
 
+		recordVectors(first->realTime, first->hardwareTime, first->drift);
+
 		first++;
 	}
+}
+
+void StorageWindow::recordVectors(const simtime_t& realTime, const simtime_t& hardwareTime, double drift)
+{
+	driftVector.recordWithTimestamp(realTime, drift);
+	timeVector.recordWithTimestamp(realTime, hardwareTime);
 }

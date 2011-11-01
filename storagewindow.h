@@ -1,15 +1,16 @@
 #ifndef STORAGEWINDOW_H
 #define STORAGEWINDOW_H
 
+#include <omnetpp.h>
+#include "hardwareclock.h"
+
 class Driftsource;
-class Hardwareclock {
-	class Properties;
-};
 
 class StorageWindow
 {
 	struct holdPoint
 	{
+		simtime_t realTime;
 		simtime_t hardwareTime;
 		double drift;
 	};
@@ -20,7 +21,12 @@ class StorageWindow
 
 	Driftsource* source;
 
+	cOutVector driftVector;
+	cOutVector timeVector;
+
 	void fillRange(std::vector<holdPoint>::iterator first, std::vector<holdPoint>::iterator last);
+
+	void recordVectors(const simtime_t& realTime, const simtime_t& hardwareTime, double drift);
 
 public:
 	/// Initializes the storage window.
