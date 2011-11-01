@@ -1,15 +1,23 @@
 simple HardwareClock {
 	parameters:
-		double interval @unit(s) = 0.001s;
-		int update = 100;
+		double interval @unit(s) = default(0.001s);
+		int update = default(100);
 		@display("i=device/clock");
-
-//		volatile double drift_distribution = uniform(-10e-6, 10e-6);
 }
 
+simple ConstantDrift extends HardwareClock {
+	parameters:
+		interval = 1s;
+		double constant_drift = default(20e-6);
+}
 
+simple BoundedDrift extends HardwareClock {
+	parameters:
+		volatile double drift_distribution = default(uniform(-10e-6, 10e-6));
+}
 
 network TestNetwork {
 	submodules:
-		clock: HardwareClock;
+		constant: ConstantDrift;
+		bounded: BoundedDrift;
 }

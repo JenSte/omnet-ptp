@@ -1,6 +1,8 @@
 #ifndef DRIFTSOURCE_H
 #define DRIFTSOURCE_H
 
+class cPar;
+
 class Driftsource
 {
 public:
@@ -21,8 +23,12 @@ public:
 
 class BoundedDrift: public Driftsource
 {
+	const cPar& distribution;
 
+public:
+	BoundedDrift(const cPar& distribution);
 
+	double nextValue();
 };
 
 #endif

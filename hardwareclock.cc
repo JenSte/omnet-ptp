@@ -67,20 +67,17 @@ void HardwareClock::initialize()
 
 	EV << "update interval: " << properties.updateInterval() << "s\n";
 
-	storageWindow = new StorageWindow(properties, new ConstantDrift(2e-6));
+	Driftsource* d = NULL;
+
+	if (hasPar("drift_distribution")) {
+		d = new BoundedDrift(par("drift_distribution"));
+	} else
+		d = new ConstantDrift(par("constant_drift"));
+
+	storageWindow = new StorageWindow(properties, d);
 
 	cMessage *msg = new cMessage("storage window update");
 	nextUpdate(msg);
-
-	if (hasPar("drift_distribution")) {
-		EV << "present\n";
-
-		const cPar& p = par("drift_distribution");
-	} else {
-		EV << "not present\n";
-
-		const cPar& p = par("drift_distribution");
-	}
 }
 
 void HardwareClock::handleMessage(cMessage *msg)
