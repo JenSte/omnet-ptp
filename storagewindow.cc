@@ -10,7 +10,7 @@ StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Drifts
 	std::vector<holdPoint>::iterator it = data.begin();
 
 	driftVector.setName("drift");
-	timeVector.setName("hardware time");
+	timeVector.setName("hardware_time");
 
 	simtime_t now = simTime();
 
