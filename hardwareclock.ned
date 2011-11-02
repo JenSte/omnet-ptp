@@ -16,6 +16,12 @@ simple BoundedDrift extends HardwareClock {
 		volatile double drift_distribution = default(uniform(-10e-6, 10e-6));
 }
 
+simple BoundedDriftVariation extends HardwareClock {
+	parameters:
+		volatile double drift_distribution = default(uniform(-10e-6, 10e-6));
+		double max_drift_variation = default(10e-8);
+}
+
 network TestNetwork {
 	submodules:
 		constant: ConstantDrift;
