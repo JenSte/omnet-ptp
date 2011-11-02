@@ -13,6 +13,9 @@ StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Drifts
 	timeVector.setName("hardware_time");
 	deviationVector.setName("time_deviation");
 
+	timeVector.setUnit("s");
+	deviationVector.setUnit("s");
+
 	simtime_t now = simTime();
 
 	it->realTime = now;
