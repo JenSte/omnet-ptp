@@ -23,6 +23,7 @@ class StorageWindow
 
 	cOutVector driftVector;
 	cOutVector timeVector;
+	cOutVector deviationVector;
 
 	void fillRange(std::vector<holdPoint>::iterator first, std::vector<holdPoint>::iterator last);
 
