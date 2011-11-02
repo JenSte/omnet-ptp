@@ -64,6 +64,9 @@ private:
 	/// between different simulation runs.
 	void cleanup();
 
+	/// Updates the text shown to the user in the GUI.
+	void updateDisplay();
+
 protected:
 	/// Initializes the module.
 	virtual void initialize();

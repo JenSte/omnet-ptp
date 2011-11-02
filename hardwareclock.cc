@@ -75,6 +75,7 @@ void HardwareClock::initialize()
 		d = new ConstantDrift(par("constant_drift"));
 
 	storageWindow = new StorageWindow(properties, d);
+	updateDisplay();
 
 	cMessage *msg = new cMessage("storage window update");
 	nextUpdate(msg);
@@ -86,7 +87,41 @@ void HardwareClock::handleMessage(cMessage *msg)
 		// the only self message is to update the storage window
 
 		storageWindow->update();
+		updateDisplay();
 EV << "time after update: " << storageWindow->tBegin() << '\n';
 		nextUpdate(msg);
 	}
+}
+
+void HardwareClock::updateDisplay()
+{
+	simtime_t real = simTime();
+	simtime_t hard = storageWindow->tBegin();
+
+	simtime_t diff = hard - real;
+	double d = fabs(diff.dbl());
+
+	const char  sign = diff < 0 ? '-' : '+';
+	const char* unit;
+	int val;
+
+	       if (d > 1) {
+		val = d;        unit =  "s";
+	} else if (d > 1e-3) {
+		val = d * 1e3;  unit = "ms";
+	} else if (d > 1e-6) {
+		val = d * 1e6;  unit = "us";
+	} else if (d > 1e-9) {
+		val = d * 1e9;  unit = "ns";
+	} else if (d > 1e-12) {
+		val = d * 1e12; unit = "ps";
+	} else {
+		getDisplayString().setTagArg("t", 0, "delta t: ca. 0s");
+		return;
+	}
+
+	char buf[64];
+	snprintf(buf, sizeof(buf), "delta t: ca. %c%i%s", sign, val, unit);
+
+	getDisplayString().setTagArg("t", 0, buf);
 }
