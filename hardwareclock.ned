@@ -24,6 +24,7 @@ simple BoundedDriftVariation extends HardwareClock {
 
 network TestNetwork {
 	submodules:
-		constant: ConstantDrift;
-		bounded: BoundedDrift;
+		constantDriftClock: ConstantDrift;
+		boundedDriftClock: BoundedDrift;
+		boundedDriftDeviationClock: BoundedDriftVariation;
 }
