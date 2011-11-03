@@ -133,48 +133,36 @@ void HardwareClock::updateDisplay()
 
 simtime_t HardwareClock::getHWtime() const
 {
-	simtime_t real = simTime();
+	simtime_t now = simTime();
 
-	int k = (real - storageWindow->holdPointAt(0).realTime) / properties.tint();
+	int k = storageWindow->indexOf(now);
 
-	const StorageWindow::holdPoint& hp = storageWindow->holdPointAt(k);
+	const StorageWindow::holdPoint& hp = storageWindow->at(k);
 
-	simtime_t t = real - hp.realTime;
+	simtime_t t = now - hp.realTime;
 
 	return hp.hardwareTime + t * (1 + hp.drift);
 }
 
-#include <assert.h>
 bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) const
 {
-	if (hwtime < storageWindow->hardwareTimeBegin())
-		assert(false);
-
-	if (hwtime > storageWindow->hardwareTimeEnd()) {
-		// outside of storage window, can't translate timestamp yet
+	if (hwtime < storageWindow->at(0).hardwareTime ||
+	    hwtime > storageWindow->hardwareTimeEnd()) {
+		// outside of storage window, can't translate timestamp 
 		return false;
 	}
 
-	simtime_t now = simTime();
+	// the current interval is the lower limit for the
+	// interval the hardware time is in
+	size_t k = storageWindow->indexOf(simTime());
 
-	// find current interval, it's the lower limit for the interval
-	// the hardware time is in
-	size_t k = (now - storageWindow->holdPointAt(0).realTime) / properties.tint();
-
-	EV << "k from " << k;
-	while (k + 1 < properties.s() && storageWindow->holdPointAt(k + 1).hardwareTime < hwtime)
+	// find the correct interval
+	while (storageWindow->at(k + 1).hardwareTime < hwtime)
 		k++;
-	EV << "to " << k << '\n';
 
-	const StorageWindow::holdPoint& hp = storageWindow->holdPointAt(k);
+	const StorageWindow::holdPoint& hp = storageWindow->at(k);
 
 	realtime = hp.realTime + (hwtime - hp.hardwareTime) / (1 + hp.drift);
-
-	// 'hwtime' now lies in the interval between k and k+1
-
-	EV << "HW k: " << storageWindow->holdPointAt(k    ).hardwareTime << "\n";
-	EV << "HW k: " << storageWindow->holdPointAt(k + 1).hardwareTime << "\n";
-
 
 	return true;
 }

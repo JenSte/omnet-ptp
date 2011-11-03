@@ -57,7 +57,18 @@ public:
 	/// Returns the time at the end of the storage window.
 	const simtime_t& hardwareTimeEnd() const { return _hardwareTimeEnd; }
 
-	const StorageWindow::holdPoint& holdPointAt(size_t idx) const;
+	/// Returns the hold point at index idx.
+	///
+	/// If the index is out of bounds, an std::logic_error exception is thrown.
+	/// \param idx	The index of the requested hold point.
+	/// \returns	The hold point at index idx.
+	const StorageWindow::holdPoint& at(size_t idx) const;
+
+	/// Calculates the hold point index for a timestamp.
+	///
+	/// \param	A simulation timestamp.
+	/// \returns	The index of the hold point in what the simulation time lies.
+	size_t indexOf(const simtime_t& t) const;
 };
 
 #endif
