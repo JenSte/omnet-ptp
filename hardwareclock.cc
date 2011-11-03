@@ -100,6 +100,11 @@ void HardwareClock::handleMessage(cMessage *msg)
 
 void HardwareClock::updateDisplay()
 {
+	if (!ev.isGUI() || ev.isDisabled()) {
+		// skip this if GUI is not running or in express mode
+		return;
+	}
+
 	simtime_t real = simTime();
 	const simtime_t& hard = storageWindow->hardwareTimeBegin();
 
