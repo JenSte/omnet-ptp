@@ -23,14 +23,17 @@ simple BoundedDriftVariation extends HardwareClock {
 }
 
 simple ScheduleTestApp {
+	parameters:
+		@display("i=block/app");
 }
 
 network TestNetwork {
 	submodules:
+		testApp: ScheduleTestApp;
+
 		constantDriftClock: ConstantDrift;
 		boundedDriftClock: BoundedDrift;
 		boundedDriftDeviationClock: BoundedDriftVariation;
 
-		app: ScheduleTestApp;
 }
 

@@ -5,16 +5,27 @@
 
 class HardwareClock;
 
+struct ScheduleTestMsg: public cMessage
+{
+	HardwareClock* clock;
+
+	simtime_t time;
+};
+
 class ScheduleTestApp: public cSimpleModule
 {
-	std::vector<HardwareClock*> clocks;
+	/// The number of pending test messages.
+	int pending;
 
 protected:
-	/// Initializes the module.
-	virtual void initialize();
-
 	/// Handles the given message.
 	virtual void handleMessage(cMessage *msg);
+
+	int numInitStages() const;
+
+	void initialize(int stage);
+
+	void finish();
 };
 
 Define_Module(ScheduleTestApp);

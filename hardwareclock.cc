@@ -55,6 +55,9 @@ void HardwareClock::cleanup()
 		storageWindow = NULL;
 	}
 
+	// TODO: delete messages?
+	queue = std::priority_queue<QueuedMessage>();
+
 	// NOTE: selfMsg isn't deleted
 }
 
@@ -170,4 +173,25 @@ bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) co
 	realtime = hp.realTime + (hwtime - hp.hardwareTime) / (1 + hp.drift);
 
 	return true;
+}
+
+void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self)
+{
+	simtime_t nowHW = getHWtime();
+
+	if (time <= nowHW) {
+		// message is in the past
+		return;
+	}
+
+	simtime_t real;
+
+	if (HWtoSimTime(time, real)) {
+		// hardware timestamp in storage window
+		self->scheduleAt(real, msg);
+	} else {
+		// hardware timestamp not yet in storage
+		// window, keep message for alter
+		queue.push(QueuedMessage(time, msg, self));
+	}
 }

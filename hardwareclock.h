@@ -52,6 +52,29 @@ public:
 	};
 
 private:
+
+	class QueuedMessage
+	{
+		simtime_t time;
+		cMessage* msg;
+		cSimpleModule* self;
+
+	public:
+		QueuedMessage(const simtime_t& time, cMessage* msg, cSimpleModule* self)
+			: time(time)
+			, msg(msg)
+			, self(self)
+		{
+		}
+
+		bool operator<(const QueuedMessage& rhs) const
+		{
+			return time < rhs.time;
+		}
+	};
+
+	std::priority_queue<QueuedMessage> queue;
+
 	Properties properties;
 
 	StorageWindow* storageWindow;
@@ -81,6 +104,8 @@ public:
 	bool HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) const;
 
 	simtime_t getHWtime() const;
+
+	void scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self);
 };
 
 Define_Module(HardwareClock);
