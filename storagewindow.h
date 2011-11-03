@@ -8,6 +8,7 @@ class Driftsource;
 
 class StorageWindow
 {
+public:
 	struct holdPoint
 	{
 		simtime_t realTime;
@@ -15,6 +16,7 @@ class StorageWindow
 		double drift;
 	};
 
+private:
 	std::vector<holdPoint> data;
 
 	const HardwareClock::Properties& properties;
@@ -24,6 +26,8 @@ class StorageWindow
 	cOutVector driftVector;
 	cOutVector timeVector;
 	cOutVector deviationVector;
+
+	simtime_t _hardwareTimeEnd;
 
 	void fillRange(std::vector<holdPoint>::iterator first, std::vector<holdPoint>::iterator last);
 
@@ -48,10 +52,12 @@ public:
 	void update();
 
 	/// Returns the time at the beginning of the storage window.
-	simtime_t tBegin() const { return data[0].hardwareTime; }
+	const simtime_t& hardwareTimeBegin() const { return data[0].hardwareTime; }
 
 	/// Returns the time at the end of the storage window.
-	simtime_t tEnd() const { return data[data.size() - 1].hardwareTime + properties.tint(); }
+	const simtime_t& hardwareTimeEnd() const { return _hardwareTimeEnd; }
+
+	const StorageWindow::holdPoint& holdPointAt(size_t idx) const;
 };
 
 #endif

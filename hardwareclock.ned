@@ -22,9 +22,15 @@ simple BoundedDriftVariation extends HardwareClock {
 		double max_drift_variation = default(10e-8);
 }
 
+simple ScheduleTestApp {
+}
+
 network TestNetwork {
 	submodules:
 		constantDriftClock: ConstantDrift;
 		boundedDriftClock: BoundedDrift;
 		boundedDriftDeviationClock: BoundedDriftVariation;
+
+		app: ScheduleTestApp;
 }
+

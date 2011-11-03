@@ -1,5 +1,6 @@
 #include "storagewindow.h"
 #include "driftsource.h"
+#include <exception>
 
 StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Driftsource* source)
 	: properties(properties)
@@ -53,6 +54,8 @@ void StorageWindow::fillRange(std::vector<holdPoint>::iterator first, std::vecto
 
 		first++;
 	}
+
+	_hardwareTimeEnd = data[data.size() - 1].hardwareTime + properties.tint() * (1 + data[data.size() - 1].drift);
 }
 
 void StorageWindow::recordVectors(const simtime_t& realTime, const simtime_t& hardwareTime, double drift)
@@ -60,4 +63,12 @@ void StorageWindow::recordVectors(const simtime_t& realTime, const simtime_t& ha
 	driftVector.recordWithTimestamp(realTime, drift);
 	timeVector.recordWithTimestamp(realTime, hardwareTime);
 	deviationVector.recordWithTimestamp(realTime, hardwareTime - realTime);
+}
+
+const StorageWindow::holdPoint& StorageWindow::holdPointAt(size_t idx) const
+{
+	if (idx > data.size() - 1)
+		throw std::logic_error("StorageWindow::holdPoint: index out of bounds");
+
+	return data[idx];
 }

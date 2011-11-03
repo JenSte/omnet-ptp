@@ -77,6 +77,10 @@ protected:
 public:
 	HardwareClock();
 	~HardwareClock();
+
+	bool HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) const;
+
+	simtime_t getHWtime() const;
 };
 
 Define_Module(HardwareClock);

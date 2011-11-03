@@ -93,7 +93,7 @@ void HardwareClock::handleMessage(cMessage *msg)
 
 		storageWindow->update();
 		updateDisplay();
-EV << "time after update: " << storageWindow->tBegin() << '\n';
+
 		nextUpdate(msg);
 	}
 }
@@ -101,7 +101,7 @@ EV << "time after update: " << storageWindow->tBegin() << '\n';
 void HardwareClock::updateDisplay()
 {
 	simtime_t real = simTime();
-	simtime_t hard = storageWindow->tBegin();
+	const simtime_t& hard = storageWindow->hardwareTimeBegin();
 
 	simtime_t diff = hard - real;
 	double d = fabs(diff.dbl());
@@ -129,4 +129,52 @@ void HardwareClock::updateDisplay()
 	snprintf(buf, sizeof(buf), "delta t: ca. %c%i%s", sign, val, unit);
 
 	getDisplayString().setTagArg("t", 0, buf);
+}
+
+simtime_t HardwareClock::getHWtime() const
+{
+	simtime_t real = simTime();
+
+	int k = (real - storageWindow->holdPointAt(0).realTime) / properties.tint();
+
+	const StorageWindow::holdPoint& hp = storageWindow->holdPointAt(k);
+
+	simtime_t t = real - hp.realTime;
+
+	return hp.hardwareTime + t * (1 + hp.drift);
+}
+
+#include <assert.h>
+bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) const
+{
+	if (hwtime < storageWindow->hardwareTimeBegin())
+		assert(false);
+
+	if (hwtime > storageWindow->hardwareTimeEnd()) {
+		// outside of storage window, can't translate timestamp yet
+		return false;
+	}
+
+	simtime_t now = simTime();
+
+	// find current interval, it's the lower limit for the interval
+	// the hardware time is in
+	size_t k = (now - storageWindow->holdPointAt(0).realTime) / properties.tint();
+
+	EV << "k from " << k;
+	while (k + 1 < properties.s() && storageWindow->holdPointAt(k + 1).hardwareTime < hwtime)
+		k++;
+	EV << "to " << k << '\n';
+
+	const StorageWindow::holdPoint& hp = storageWindow->holdPointAt(k);
+
+	realtime = hp.realTime + (hwtime - hp.hardwareTime) / (1 + hp.drift);
+
+	// 'hwtime' now lies in the interval between k and k+1
+
+	EV << "HW k: " << storageWindow->holdPointAt(k    ).hardwareTime << "\n";
+	EV << "HW k: " << storageWindow->holdPointAt(k + 1).hardwareTime << "\n";
+
+
+	return true;
 }
