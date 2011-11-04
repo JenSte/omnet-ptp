@@ -81,6 +81,8 @@ void ScheduleTestApp::handleMessage(cMessage *msg)
 			<< "sec   (should be equal or very close to the above timestamp)\n";
 		EV << "simulation time:        " << extend(simTime().str())
 			<< "sec   (doesn't need to be equal depending on the clock drift)\n";
+
+		delete m;
 	}
 
 }

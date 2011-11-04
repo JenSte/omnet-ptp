@@ -55,8 +55,15 @@ void HardwareClock::cleanup()
 		storageWindow = NULL;
 	}
 
-	// TODO: delete messages?
-	queue = std::priority_queue<QueuedMessage>();
+	// delete all remaining messages,
+	// clear queue
+	while (queue.size() > 0) {
+		const QueuedMessage& q = queue.top();
+
+		delete q.msg;
+
+		queue.pop();
+	}
 
 	// NOTE: selfMsg isn't deleted
 }
@@ -108,6 +115,12 @@ void HardwareClock::handleMessage(cMessage *msg)
 				// of the following messages also not)
 				break;
 			}
+
+			// set the default owner that gets
+			// used when we drop() the ownership,
+			// otherwise scheduleAt() raises an exception
+			q.msg->setDefaultOwner(q.self);
+			drop(q.msg);
 
 			q.self->scheduleAt(real, q.msg);
 
@@ -209,6 +222,13 @@ void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimp
 	} else {
 		// hardware timestamp not yet in storage
 		// window, keep message for alter
+
+		// take the ownership of the message
+		// otherwise a SEGFAULT can happen when
+		// we flush the queue (in cleanup()) and
+		// the real owner object is alreade deleted
+		take(msg);
+
 		queue.push(QueuedMessage(time, msg, self));
 	}
 }
