@@ -8,7 +8,12 @@ int ScheduleTestApp::numInitStages() const
 
 void ScheduleTestApp::initialize(int stage)
 {
-	simtime_t times[] = { SimTime::parse("55.503ms"), SimTime::parse("10.3s") };
+	simtime_t times[] = {
+		SimTime::parse("55.503ms"),
+		SimTime::parse("10.3s"),
+		SimTime::parse("100.000000004s"),
+		SimTime::parse("400s")
+	};
 
 	if (1 == stage) {
 		// the initialization is done in
