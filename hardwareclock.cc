@@ -165,7 +165,7 @@ bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) co
 	size_t k = storageWindow->indexOf(simTime());
 
 	// find the correct interval
-	while (storageWindow->at(k + 1).hardwareTime < hwtime)
+	while (k != properties.s() - 1 && storageWindow->at(k + 1).hardwareTime < hwtime)
 		k++;
 
 	const StorageWindow::holdPoint& hp = storageWindow->at(k);
