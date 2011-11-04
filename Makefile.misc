@@ -8,3 +8,7 @@
 .PHONY: doc
 doc:
 	doxygen Doxyfile
+
+.PHONY: tar
+tar:
+	git archive --format=tar master | gzip > ../hardwareclock_`date '+%Y-%m-%d_%H_%M'`.tar.gz
