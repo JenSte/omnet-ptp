@@ -8,7 +8,7 @@ StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Drifts
 {
 	data.resize(properties.s());
 
-	std::vector<holdPoint>::iterator it = data.begin();
+	std::vector<HoldPoint>::iterator it = data.begin();
 
 	driftVector.setName("drift");
 	timeVector.setName("hardware_time");
@@ -35,16 +35,16 @@ StorageWindow::~StorageWindow()
 
 void StorageWindow::update()
 {
-	data = std::vector<holdPoint>(data.begin() + properties.u(), data.end());
+	data = std::vector<HoldPoint>(data.begin() + properties.u(), data.end());
 	data.resize(properties.s());
 
 	fillRange(data.begin() + (properties.s() - properties.u()), data.end());
 }
 
-void StorageWindow::fillRange(std::vector<holdPoint>::iterator first, std::vector<holdPoint>::iterator last)
+void StorageWindow::fillRange(std::vector<HoldPoint>::iterator first, std::vector<HoldPoint>::iterator last)
 {
 	while (first != last) {
-		std::vector<holdPoint>::iterator pre = first - 1;
+		std::vector<HoldPoint>::iterator pre = first - 1;
 
 		first->realTime = pre->realTime + properties.tint();
 		first->hardwareTime = pre->hardwareTime + properties.tint() * (1 + pre->drift);
@@ -65,10 +65,10 @@ void StorageWindow::recordVectors(const simtime_t& realTime, const simtime_t& ha
 	deviationVector.recordWithTimestamp(realTime, hardwareTime - realTime);
 }
 
-const StorageWindow::holdPoint& StorageWindow::at(size_t idx) const
+const StorageWindow::HoldPoint& StorageWindow::at(size_t idx) const
 {
 	if (idx > data.size() - 1)
-		throw std::logic_error("StorageWindow::holdPoint: index out of bounds");
+		throw std::logic_error("StorageWindow::HoldPoint: index out of bounds");
 
 	return data[idx];
 }

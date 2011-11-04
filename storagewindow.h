@@ -11,7 +11,7 @@ class StorageWindow
 {
 public:
 	/// Represents a hold point of the continuous linear approximation.
-	struct holdPoint
+	struct HoldPoint
 	{
 		/// The simulation time at the point.
 		simtime_t realTime;
@@ -25,7 +25,7 @@ public:
 
 private:
 	/// Holds the data of the approximation.
-	std::vector<holdPoint> data;
+	std::vector<HoldPoint> data;
 
 	/// The properties of the clock this object belongs to.
 	const HardwareClock::Properties& properties;
@@ -49,7 +49,7 @@ private:
 	simtime_t _hardwareTimeEnd;
 
 	/// Fills the range [first, last) with new timestamp/drift values.
-	void fillRange(std::vector<holdPoint>::iterator first, std::vector<holdPoint>::iterator last);
+	void fillRange(std::vector<HoldPoint>::iterator first, std::vector<HoldPoint>::iterator last);
 
 	/// Records the given values to the vector files.
 	///
@@ -88,7 +88,7 @@ public:
 	/// If the index is out of bounds, an std::logic_error exception is thrown.
 	/// \param idx	The index of the requested hold point.
 	/// \returns	The hold point at index idx.
-	const StorageWindow::holdPoint& at(size_t idx) const;
+	const StorageWindow::HoldPoint& at(size_t idx) const;
 
 	/// Calculates the hold point index for a timestamp.
 	///

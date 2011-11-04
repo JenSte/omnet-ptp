@@ -175,7 +175,7 @@ simtime_t HardwareClock::getHWtime() const
 
 	int k = storageWindow->indexOf(now);
 
-	const StorageWindow::holdPoint& hp = storageWindow->at(k);
+	const StorageWindow::HoldPoint& hp = storageWindow->at(k);
 
 	simtime_t t = now - hp.realTime;
 
@@ -198,7 +198,7 @@ bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) co
 	while (k != properties.s() - 1 && storageWindow->at(k + 1).hardwareTime < hwtime)
 		k++;
 
-	const StorageWindow::holdPoint& hp = storageWindow->at(k);
+	const StorageWindow::HoldPoint& hp = storageWindow->at(k);
 
 	realtime = hp.realTime + (hwtime - hp.hardwareTime) / (1 + hp.drift);
 
