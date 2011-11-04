@@ -97,6 +97,23 @@ void HardwareClock::handleMessage(cMessage *msg)
 		storageWindow->update();
 		updateDisplay();
 
+		// check if queued messages can be scheduled now
+		while (queue.size() > 0) {
+			const QueuedMessage& q = queue.top();
+			simtime_t real;
+
+			if (!HWtoSimTime(q.time, real)) {
+				// requested timestamp is still not in
+				// the storage window (and the timestamps
+				// of the following messages also not)
+				break;
+			}
+
+			q.self->scheduleAt(real, q.msg);
+
+			queue.pop();
+		}
+
 		nextUpdate(msg);
 	}
 }

@@ -53,7 +53,7 @@ public:
 
 private:
 
-	class QueuedMessage
+	struct QueuedMessage
 	{
 		simtime_t time;
 		cMessage* msg;
@@ -69,7 +69,10 @@ private:
 
 		bool operator<(const QueuedMessage& rhs) const
 		{
-			return time < rhs.time;
+			/// because we want to have the element with the *smallest*
+			/// timestamp to be the one with the highest priority, we
+			/// swap > and <
+			return time > rhs.time;
 		}
 	};
 
