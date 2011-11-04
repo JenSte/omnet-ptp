@@ -5,17 +5,18 @@
 
 class HardwareClock;
 
-struct ScheduleTestMsg: public cMessage
-{
-	HardwareClock* clock;
-
-	simtime_t time;
-};
-
+/// Test application for the hardware clock implementation.
 class ScheduleTestApp: public cSimpleModule
 {
 	/// The number of pending test messages.
 	int pending;
+
+	struct ScheduleTestMsg: public cMessage
+	{
+		HardwareClock* clock;
+
+		simtime_t time;
+	};
 
 protected:
 	/// Handles the given message.

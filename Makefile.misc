@@ -1,0 +1,10 @@
+#
+# This is not the makefile to compile the source!
+#
+# Run the 'opp_makemake' command in this directory
+# to get a makefile that compiles the source.
+#
+
+.PHONY: doc
+doc:
+	doxygen Doxyfile

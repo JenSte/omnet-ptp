@@ -186,7 +186,7 @@ bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) co
 {
 	if (hwtime < storageWindow->at(0).hardwareTime ||
 	    hwtime > storageWindow->hardwareTimeEnd()) {
-		// outside of storage window, can't translate timestamp 
+		// outside of storage window, can't translate timestamp
 		return false;
 	}
 
@@ -221,12 +221,12 @@ void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimp
 		self->scheduleAt(real, msg);
 	} else {
 		// hardware timestamp not yet in storage
-		// window, keep message for alter
+		// window, keep message for later
 
 		// take the ownership of the message
 		// otherwise a SEGFAULT can happen when
 		// we flush the queue (in cleanup()) and
-		// the real owner object is alreade deleted
+		// the real owner object is already deleted
 		take(msg);
 
 		queue.push(QueuedMessage(time, msg, self));

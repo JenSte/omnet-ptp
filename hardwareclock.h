@@ -6,7 +6,7 @@
 
 class StorageWindow;
 
-/// Implementation of a hardware (real, non perfect) clock.
+/// \brief Implementation of a hardware (real, non perfect) clock.
 ///
 /// This class implements a hardware clock according to the
 /// paper "Accurate Clock Models for Simulating Wireless Sensor
@@ -52,7 +52,6 @@ public:
 	};
 
 private:
-
 	struct QueuedMessage
 	{
 		simtime_t time;
@@ -76,14 +75,20 @@ private:
 		}
 	};
 
+	/// Queued messages that can't be scheduled yet.
 	std::priority_queue<QueuedMessage> queue;
 
+	/// The properties of this clock.
 	Properties properties;
 
 	StorageWindow* storageWindow;
 
+	/// Message to schedule storage window updates.
 	cMessage* selfMsg;
 
+	/// Schedules the next update of the storage window.
+	///
+	/// \param msg	The message used as a self message.
 	void nextUpdate(cMessage* msg);
 
 	/// Cleans up dynamically allocated resources
@@ -101,13 +106,35 @@ protected:
 	virtual void handleMessage(cMessage *msg);
 
 public:
+	/// Initializes the hardware clock.
 	HardwareClock();
+
+	/// Cleans up the used resources of the hardware clock.
 	~HardwareClock();
 
+	/// Converts a hardware timestamp to a simulation timestamp.
+	///
+	/// \param hwtime	A hardware timestamp that is in the storage window
+	///			of the clock.
+	/// \param [out] realtime	The timestamp where the output is placed.
+	/// \returns	true if the hardware timestamp could be converted, false
+	///		otherwise (realtime is then undefined).
 	bool HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) const;
 
+	/// \returns	The hardware time of the clock that corresponds to the
+	///		current simulation time.
 	simtime_t getHWtime() const;
 
+	/// Schedules a message at hardware time.
+	///
+	/// Note that the message doesn't have to be scheduled immediately, if the
+	/// timestamp lies outside of the current precalculated time range of the clock,
+	/// it's stored and scheduled at a later time (Take this in account if you
+	/// want to cancel the message).
+	///
+	/// \param time	The hardware time when the message should be scheduled.
+	/// \param msg	The message to schedule.
+	/// \param self	The object that is scheduling the message.
 	void scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self);
 };
 

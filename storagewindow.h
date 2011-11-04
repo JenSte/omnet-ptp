@@ -6,31 +6,57 @@
 
 class Driftsource;
 
+/// Saves the data points for the continuous linear approximation of the drift function.
 class StorageWindow
 {
 public:
+	/// Represents a hold point of the continuous linear approximation.
 	struct holdPoint
 	{
+		/// The simulation time at the point.
 		simtime_t realTime;
+
+		/// The hardware time at the point.
 		simtime_t hardwareTime;
+
+		/// The drift value between this and the next point.
 		double drift;
 	};
 
 private:
+	/// Holds the data of the approximation.
 	std::vector<holdPoint> data;
 
+	/// The properties of the clock this object belongs to.
 	const HardwareClock::Properties& properties;
 
+	/// The object that supplies the drift values to fill
+	/// the data vector.
 	Driftsource* source;
 
+	/// Vector to record the drift values.
 	cOutVector driftVector;
+
+	/// Vector to record the hardware timestamps.
 	cOutVector timeVector;
+
+	/// Vector to record the deviation between the hardware
+	/// and simulation time.
 	cOutVector deviationVector;
 
+	/// The hardware timestamp of the first point after the
+	/// storage window.
 	simtime_t _hardwareTimeEnd;
 
+	/// Fills the range [first, last) with new timestamp/drift values.
 	void fillRange(std::vector<holdPoint>::iterator first, std::vector<holdPoint>::iterator last);
 
+	/// Records the given values to the vector files.
+	///
+	/// \param realTime	The simulation timestamp, also used to calculate the time deviation.
+	///			Has to be increasing between two calls to the function.
+	/// \param hardwareTime	The hardware timestamp at realTime.
+	/// \param drift	The drift value at realTime.
 	void recordVectors(const simtime_t& realTime, const simtime_t& hardwareTime, double drift);
 
 public:

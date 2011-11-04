@@ -1,3 +1,5 @@
+doc/
+documentation/
 Makefile
 hardwareclock
 out/
