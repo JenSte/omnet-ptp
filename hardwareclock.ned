@@ -13,12 +13,12 @@ simple ConstantDrift extends HardwareClock {
 
 simple BoundedDrift extends HardwareClock {
 	parameters:
-		volatile double drift_distribution = default(uniform(-10e-4, 10e-4));
+		volatile double drift_distribution = default(uniform(-100e-6, 100e-6));
 }
 
 simple BoundedDriftVariation extends HardwareClock {
 	parameters:
-		volatile double drift_distribution = default(uniform(-10e-4, 10e-4));
+		volatile double drift_distribution = default(uniform(-100e-6, 100e-6));
 		double max_drift_variation = default(10e-8);
 }
 
