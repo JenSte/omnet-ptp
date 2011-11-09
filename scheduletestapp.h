@@ -29,6 +29,4 @@ protected:
 	void finish();
 };
 
-Define_Module(ScheduleTestApp);
-
 #endif

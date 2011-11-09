@@ -2,6 +2,8 @@
 #include "storagewindow.h"
 #include "driftsource.h"
 
+Define_Module(HardwareClock);
+
 HardwareClock::Properties::Properties()
 	: _u(0)
 	, _s(0)

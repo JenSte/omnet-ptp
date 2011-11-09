@@ -1,6 +1,8 @@
 #include "scheduletestapp.h"
 #include "hardwareclock.h"
 
+Define_Module(ScheduleTestApp);
+
 int ScheduleTestApp::numInitStages() const
 {
 	return 2;

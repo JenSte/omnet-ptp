@@ -138,6 +138,4 @@ public:
 	void scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self);
 };
 
-Define_Module(HardwareClock);
-
 #endif
