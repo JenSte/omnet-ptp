@@ -136,6 +136,8 @@ public:
 	/// \param msg	The message to schedule.
 	/// \param self	The object that is scheduling the message.
 	void scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self);
+
+	static std::vector<HardwareClock*> findClocks(const cModule* parent);
 };
 
 #endif

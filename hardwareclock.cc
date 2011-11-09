@@ -234,3 +234,17 @@ void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimp
 		queue.push(QueuedMessage(time, msg, self));
 	}
 }
+
+std::vector<HardwareClock*> HardwareClock::findClocks(const cModule* parent)
+{
+	std::vector<HardwareClock*> result;
+
+	for (cModule::SubmoduleIterator i(parent); !i.end(); i++) {
+		cModule* child = i();
+
+		if (0 == strcmp("HardwareClock", child->getClassName()))
+			result.push_back(check_and_cast<HardwareClock*>(child));
+	}
+
+	return result;
+}

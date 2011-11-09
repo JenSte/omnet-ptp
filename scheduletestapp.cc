@@ -24,42 +24,27 @@ void ScheduleTestApp::initialize(int stage)
 
 		pending = 0;
 
-		//
-		// find the hardware clocks
-		//
-		cModule* parent = getParentModule();
-		if (!parent) {
-			EV << "no parent module";
-			return;
-		}
+		std::vector<HardwareClock*> clocks = HardwareClock::findClocks(getParentModule());
 
-		size_t cnt = 0;
-		for (cModule::SubmoduleIterator i(parent); !i.end(); i++) {
-			cModule* child = i();
-
-			if (0 != strcmp("HardwareClock", child->getClassName())) {
-				// not a clock
-				continue;
-			}
-
-			HardwareClock* clock = check_and_cast<HardwareClock*>(child);
-			cnt++;
-
+		std::vector<HardwareClock*>::iterator it = clocks.begin();
+		while (it != clocks.end()) {
 			//
 			// schedule some self messages on every clock
 			//
 			for (size_t i = 0; i < sizeof(times) / sizeof(simtime_t); i++) {
 				ScheduleTestMsg* msg = new ScheduleTestMsg();
 				msg->setName("ScheduleTestMsg");
-				msg->clock = clock;
+				msg->clock = *it;
 				msg->time = times[i];
 
-				clock->scheduleAtHWtime(times[i], msg, this);
+				(*it)->scheduleAtHWtime(times[i], msg, this);
 				pending++;
 			}
+
+			it++;
 		}
 
-		EV << cnt << " clock(s) found, " << pending << " messages scheduled \n";
+		EV << clocks.size() << " clock(s) found, " << pending << " messages scheduled \n";
 	}
 }
 
