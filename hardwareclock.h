@@ -138,6 +138,7 @@ public:
 	///		current simulation time.
 	simtime_t getHWtime() const;
 
+	/// \returns Pointers to all hardware clocks in the compound module 'parent'.
 	static std::vector<HardwareClock*> findClocks(const cModule* parent);
 
 	// needs access to 'scheduleAtHWtime'

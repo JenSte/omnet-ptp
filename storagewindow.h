@@ -92,7 +92,7 @@ public:
 
 	/// Calculates the hold point index for a timestamp.
 	///
-	/// \param	A simulation timestamp.
+	/// \param t	A simulation timestamp.
 	/// \returns	The index of the hold point in what the simulation time lies.
 	size_t indexOf(const simtime_t& t) const;
 };

@@ -73,8 +73,8 @@ void ScheduleTestApp::handleMessage(cMessage *msg)
 
 		delete m;
 	}
-
 }
+
 void ScheduleTestApp::finish()
 {
 	if (0 == pending)
