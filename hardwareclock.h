@@ -4,6 +4,7 @@
 #include <omnetpp.h>
 #include <queue>
 
+class HardwareClockClient;
 class StorageWindow;
 
 /// \brief Implementation of a hardware (real, non perfect) clock.
@@ -56,10 +57,10 @@ private:
 	{
 		simtime_t time;
 		cMessage* msg;
-		cSimpleModule* self;
+		HardwareClockClient* self;
 
 	public:
-		QueuedMessage(const simtime_t& time, cMessage* msg, cSimpleModule* self)
+		QueuedMessage(const simtime_t& time, cMessage* msg, HardwareClockClient* self)
 			: time(time)
 			, msg(msg)
 			, self(self)
@@ -98,6 +99,18 @@ private:
 	/// Updates the text shown to the user in the GUI.
 	void updateDisplay();
 
+	/// Schedules a message at hardware time.
+	///
+	/// Note that the message doesn't have to be scheduled immediately, if the
+	/// timestamp lies outside of the current precalculated time range of the clock,
+	/// it's stored and scheduled at a later time (Take this in account if you
+	/// want to cancel the message).
+	///
+	/// \param time	The hardware time when the message should be scheduled.
+	/// \param msg	The message to schedule.
+	/// \param self	The object that is scheduling the message.
+	void scheduleAtHWtime(const simtime_t& time, cMessage* msg, HardwareClockClient* self);
+
 protected:
 	/// Initializes the module.
 	virtual void initialize();
@@ -125,19 +138,10 @@ public:
 	///		current simulation time.
 	simtime_t getHWtime() const;
 
-	/// Schedules a message at hardware time.
-	///
-	/// Note that the message doesn't have to be scheduled immediately, if the
-	/// timestamp lies outside of the current precalculated time range of the clock,
-	/// it's stored and scheduled at a later time (Take this in account if you
-	/// want to cancel the message).
-	///
-	/// \param time	The hardware time when the message should be scheduled.
-	/// \param msg	The message to schedule.
-	/// \param self	The object that is scheduling the message.
-	void scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self);
-
 	static std::vector<HardwareClock*> findClocks(const cModule* parent);
+
+	// needs access to 'scheduleAtHWtime'
+	friend class HardwareClockClient;
 };
 
 #endif

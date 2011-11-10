@@ -37,7 +37,9 @@ void ScheduleTestApp::initialize(int stage)
 				msg->clock = *it;
 				msg->time = times[i];
 
-				(*it)->scheduleAtHWtime(times[i], msg, this);
+				setHardwareClock(*it);
+				scheduleAtHWtime(times[i], msg);
+
 				pending++;
 			}
 

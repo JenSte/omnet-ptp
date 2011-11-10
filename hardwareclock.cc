@@ -1,4 +1,5 @@
 #include "hardwareclock.h"
+#include "hardwareclockclient.h"
 #include "storagewindow.h"
 #include "driftsource.h"
 
@@ -118,13 +119,7 @@ void HardwareClock::handleMessage(cMessage *msg)
 				break;
 			}
 
-			// set the default owner that gets
-			// used when we drop() the ownership,
-			// otherwise scheduleAt() raises an exception
-			q.msg->setDefaultOwner(q.self);
-			drop(q.msg);
-
-			q.self->scheduleAt(real, q.msg);
+			q.self->scheduleAtInObject(real, q.msg);
 
 			queue.pop();
 		}
@@ -207,8 +202,11 @@ bool HardwareClock::HWtoSimTime(const simtime_t& hwtime, simtime_t& realtime) co
 	return true;
 }
 
-void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimpleModule* self)
+void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, HardwareClockClient* self)
 {
+	Enter_Method_Silent();
+	take(msg);
+
 	simtime_t nowHW = getHWtime();
 
 	if (time <= nowHW) {
@@ -220,17 +218,10 @@ void HardwareClock::scheduleAtHWtime(const simtime_t& time, cMessage* msg, cSimp
 
 	if (HWtoSimTime(time, real)) {
 		// hardware timestamp in storage window
-		self->scheduleAt(real, msg);
+		self->scheduleAtInObject(real, msg);
 	} else {
 		// hardware timestamp not yet in storage
 		// window, keep message for later
-
-		// take the ownership of the message
-		// otherwise a SEGFAULT can happen when
-		// we flush the queue (in cleanup()) and
-		// the real owner object is already deleted
-		take(msg);
-
 		queue.push(QueuedMessage(time, msg, self));
 	}
 }

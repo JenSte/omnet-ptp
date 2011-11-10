@@ -1,12 +1,10 @@
 #ifndef SCHEDULETESTAPP_H
 #define SCHEDULETESTAPP_H
 
-#include <omnetpp.h>
-
-class HardwareClock;
+#include "hardwareclockclient.h"
 
 /// Test application for the hardware clock implementation.
-class ScheduleTestApp: public cSimpleModule
+class ScheduleTestApp: public HardwareClockClient
 {
 	/// The number of pending test messages.
 	int pending;
