@@ -1,3 +1,5 @@
+package ptp.hardwareclock;
+
 simple HardwareClock {
 	parameters:
 		double interval @unit(s) = default(1s);
@@ -21,19 +23,3 @@ simple BoundedDriftVariation extends HardwareClock {
 		volatile double drift_distribution = default(uniform(-100e-6, 100e-6));
 		double max_drift_variation = default(10e-8);
 }
-
-simple ScheduleTestApp {
-	parameters:
-		@display("i=block/app");
-}
-
-network TestNetwork {
-	submodules:
-		testApp: ScheduleTestApp;
-
-		constantDriftClock: ConstantDrift;
-		boundedDriftClock: BoundedDrift;
-		boundedDriftDeviationClock: BoundedDriftVariation;
-
-}
-
