@@ -49,10 +49,16 @@ module PtpSlaveNode extends PtpNode
 
 network PtpSimNetwork
 {
+	parameters:
+		int slaves = default(2);
+
 	submodules:
-		m: PtpMasterNode    { parameters: @display("p=40,50");        }
-		s[2]: PtpSlaveNode  { parameters: @display("p=40,250,r,100"); }
-		switch: EtherSwitch { parameters: @display("p=40,150");       }
+		m: PtpMasterNode
+			{ parameters: @display("p=40,50"); }
+		s[slaves]: PtpSlaveNode
+			{ parameters: @display("p=40,250,r,100"); }
+		switch: EtherSwitch
+			{ parameters: @display("p=40,150"); }
 
 	connections:
 		m.eth  <--> switch.ethg++;
