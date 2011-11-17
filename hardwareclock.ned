@@ -1,6 +1,6 @@
 simple HardwareClock {
 	parameters:
-		double interval @unit(s) = default(0.001s);
+		double interval @unit(s) = default(1s);
 		int update = default(100);
 		@display("i=device/clock");
 }
