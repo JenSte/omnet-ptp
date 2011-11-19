@@ -50,9 +50,15 @@ checkmakefiles:
 	exit 1; \
 	fi
 
+RUNCMD := opp_run -l $(INETDIR)/src/inet -l src/ptpsim -n $(INETDIR)/src:src:simulation simulation/omnetpp.ini
+
 .PHONY: run-sim
 run-sim:
-	opp_run -l $(INETDIR)/src/inet -l src/ptpsim -n $(INETDIR)/src:src:simulation simulation/omnetpp.ini
+	$(RUNCMD)
+
+.PHONY: run-dbg
+run-dbg:
+	cgdb -- --args $(RUNCMD)
 
 .PHONY: doc
 doc:
