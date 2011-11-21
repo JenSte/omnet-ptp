@@ -1,12 +1,12 @@
 #include "ptpslave.h"
-#include "hardwareclock.h"
 #include "ptppacket_m.h"
+#include "softwareclock.h"
 
 Define_Module(PtpSlave);
 
 void PtpSlave::initialize()
 {
-	clock = HardwareClock::findFirstClock(getParentModule());
+	clock = SoftwareClock::findFirstClock(getParentModule());
 }
 
 void PtpSlave::handleMessage(cMessage* msg)
@@ -15,7 +15,7 @@ void PtpSlave::handleMessage(cMessage* msg)
 		// if there is no hardware timestamp by
 		// the phy, use a software timestamp
 		if (0 == ptp->getTrx().raw())
-			ptp->setTrx(clock->getHWtime());
+			ptp->setTrx(clock->getSWtime());
 
 		EV << "delay: " << (ptp->getTrx() - ptp->getTtx()) << '\n';
 

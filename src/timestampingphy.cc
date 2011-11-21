@@ -1,7 +1,7 @@
 #include "timestampingphy.h"
-#include "hardwareclock.h"
 #include "ptp.h"
 #include "ptppacket_m.h"
+#include "softwareclock.h"
 #include <EtherFrame_m.h>
 
 Define_Module(TimestampingPhy);
@@ -10,7 +10,7 @@ void TimestampingPhy::initialize()
 {
 	enabled = par("enabled");
 
-	clock = HardwareClock::findFirstClock(getParentModule());
+	clock = SoftwareClock::findFirstClock(getParentModule());
 
 	ext_i = gate("external$i");
 	ext_o = gate("external$o");
@@ -32,7 +32,7 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 		 && NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
-			ptp->setTrx(clock->getHWtime());
+			ptp->setTrx(clock->getSWtime());
 		}
 
 		send(msg, int_o);
@@ -41,7 +41,7 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 		 && NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
-			ptp->setTtx(clock->getHWtime());
+			ptp->setTtx(clock->getSWtime());
 		}
 
 		send(msg, ext_o);

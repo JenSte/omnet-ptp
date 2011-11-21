@@ -4,25 +4,28 @@ import ptp.hardwareclock.IHardwareClock;
 import ptp.IPtpClock;
 import ptp.TimestampingPhy;
 import ptp.PtpMaster;
+import ptp.SoftwareClock;
 
 module PtpNode
 {
 	parameters:
 		string ptpImplementation;
-		string clockType;
+		string hwClockType;
 
 	gates:
 		inout eth;
 
 	submodules:
-		clock: <clockType> like IHardwareClock
-			{ parameters: @display("p=200,100"); }
-		p: <ptpImplementation> like IPtpClock
+		swClock: SoftwareClock
 			{ parameters: @display("p=100,100"); }
-		ethif: EthernetInterface
+		hwClock: <hwClockType> like IHardwareClock
 			{ parameters: @display("p=100,200"); }
-		phy: TimestampingPhy
+		p: <ptpImplementation> like IPtpClock
+			{ parameters: @display("p=200,100"); }
+		ethif: EthernetInterface
 			{ parameters: @display("p=200,200"); }
+		phy: TimestampingPhy
+			{ parameters: @display("p=300,200"); }
 
 	connections:
 		p.port$o --> ethif.netwIn;
@@ -35,15 +38,15 @@ module PtpNode
 module PtpMasterNode extends PtpNode
 {
 	parameters:
-		clockType = "ConstantDrift";
-		clock.constant_drift = 0;
+		hwClockType = "ConstantDrift";
+		hwClock.constant_drift = 0;
 		ptpImplementation = "PtpMaster";
 }
 
 module PtpSlaveNode extends PtpNode
 {
 	parameters:
-		clockType = default("BoundedDriftVariation");
+		hwClockType = default("BoundedDriftVariation");
 		ptpImplementation = "PtpSlave";
 }
 

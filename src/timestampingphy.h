@@ -3,13 +3,13 @@
 
 #include <omnetpp.h>
 
-class HardwareClock;
+class SoftwareClock;
 
 class TimestampingPhy: public cSimpleModule
 {
 	bool enabled;
 
-	HardwareClock* clock;
+	SoftwareClock* clock;
 
 	cGate* ext_i;
 	cGate* ext_o;
