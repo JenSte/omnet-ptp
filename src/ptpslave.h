@@ -3,8 +3,12 @@
 
 #include <omnetpp.h>
 
+class HardwareClock;
+
 class PtpSlave: public cSimpleModule
 {
+	HardwareClock* clock;
+
 protected:
 	void initialize();
 
