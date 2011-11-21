@@ -1,16 +1,12 @@
 #include "ptpslave.h"
 #include "hardwareclock.h"
 #include "ptppacket_m.h"
-#include <exception>
 
 Define_Module(PtpSlave);
 
 void PtpSlave::initialize()
 {
-	std::vector<HardwareClock*> clocks = HardwareClock::findClocks(getParentModule());
-	if (0 == clocks.size())
-		throw std::logic_error("no HardwareClock found");
-	clock = clocks[0];
+	clock = HardwareClock::findFirstClock(getParentModule());
 }
 
 void PtpSlave::handleMessage(cMessage* msg)

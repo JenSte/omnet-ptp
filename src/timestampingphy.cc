@@ -10,14 +10,7 @@ void TimestampingPhy::initialize()
 {
 	enabled = par("enabled");
 
-	// use the first available clock, if there is one
-	clock = NULL;
-	std::vector<HardwareClock*> clocks = HardwareClock::findClocks(getParentModule());
-	if (clocks.size() > 0)
-		clock = clocks[0];
-
-	if (enabled && NULL == clock)
-		EV << "timestamping is enabled, but no clock was found\n";
+	clock = HardwareClock::findFirstClock(getParentModule());
 
 	ext_i = gate("external$i");
 	ext_o = gate("external$o");
@@ -36,7 +29,6 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 
 	if (ext_i == msg->getArrivalGate()) {
 		if (enabled
-		 && NULL != clock
 		 && NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
@@ -46,7 +38,6 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 		send(msg, int_o);
 	} else { // message arrived at internal$i
 		if (enabled
-		 && NULL != clock
 		 && NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {

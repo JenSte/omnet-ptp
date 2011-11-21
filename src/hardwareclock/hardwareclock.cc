@@ -2,6 +2,7 @@
 #include "hardwareclockclient.h"
 #include "storagewindow.h"
 #include "driftsource.h"
+#include <exception>
 
 Define_Module(HardwareClock);
 
@@ -238,4 +239,14 @@ std::vector<HardwareClock*> HardwareClock::findClocks(const cModule* parent)
 	}
 
 	return result;
+}
+
+HardwareClock* HardwareClock::findFirstClock(const cModule* parent)
+{
+	std::vector<HardwareClock*> clocks = findClocks(parent);
+
+	if (0 == clocks.size())
+		throw std::logic_error("no HardwareClock found");
+
+	return clocks[0];
 }

@@ -141,6 +141,10 @@ public:
 	/// \returns Pointers to all hardware clocks in the compound module 'parent'.
 	static std::vector<HardwareClock*> findClocks(const cModule* parent);
 
+	/// \returns	A pointer to the first found hardware clock in the compound module 'parent',
+	//		throws a std::logic_error if there is no hardware clock.
+	static HardwareClock* findFirstClock(const cModule* parent);
+
 	// needs access to 'scheduleAtHWtime'
 	friend class HardwareClockClient;
 };
