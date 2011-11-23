@@ -7,11 +7,28 @@ Define_Module(SoftwareClock);
 void SoftwareClock::initialize()
 {
 	clock = HardwareClock::findFirstClock(getParentModule());
+
+	factor = 0.0;
+
+	WATCH_RW(factor);
+
+	deviationVector.setName("time_deviation");
+	deviationVector.setUnit("s");
 }
 
-SimTime SoftwareClock::getSWtime() const
+SimTime SoftwareClock::getSWtime()
 {
-	return clock->getHWtime();
+//	SimTime swt = clock->getHWtime() * (1.0 + factor);
+	SimTime swt = clock->getHWtime() + factor;
+
+	deviationVector.record(swt - simTime());
+
+	return swt;
+}
+
+void SoftwareClock::setFactor(double f)
+{
+	factor = f;
 }
 
 SoftwareClock* SoftwareClock::findFirstClock(const cModule* parent)
