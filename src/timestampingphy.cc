@@ -32,7 +32,10 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 		 && NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
-			ptp->setTrx(clock->getSWtime());
+			if (ptp->getType() == Ptp::Sync
+			 || ptp->getType() == Ptp::Delay_Req) {
+				ptp->setTrx(clock->getSWtime());
+			}
 		}
 
 		send(msg, int_o);
@@ -41,7 +44,10 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 		 && NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
-			ptp->setTtx(clock->getSWtime());
+			if (ptp->getType() == Ptp::Sync
+			 || ptp->getType() == Ptp::Delay_Req) {
+				ptp->setTtx(clock->getSWtime());
+			}
 		}
 
 		send(msg, ext_o);
