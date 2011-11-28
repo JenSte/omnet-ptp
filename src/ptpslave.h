@@ -18,6 +18,8 @@ class PtpSlave: public cSimpleModule
 		SimTime t[4];
 	} timestamps;
 
+	bool controllerEnabled;
+
 	// last measured offset from the master clock
 	double offset;
 

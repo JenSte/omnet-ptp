@@ -20,6 +20,8 @@ void PtpSlave::initialize()
 
 	offsetVector.setName("offset");
 	offsetVector.setUnit("s");
+
+	controllerEnabled = par("controllerEnabled");
 }
 
 void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
@@ -39,6 +41,9 @@ void PtpSlave::correct()
 	         - (timestamps.t[3] - timestamps.t[2]) ).dbl() / 2.0;
 
 	offsetVector.record(offset);
+
+	if (!controllerEnabled)
+		return;
 }
 
 void PtpSlave::handleMessage(cMessage* msg)
