@@ -12,6 +12,12 @@ class PtpSlave: public cSimpleModule
 
 	MACAddress masterMAC;
 
+	// the timestamps from the last received
+	// sync (0/1) and delay_resp(2/3) packets
+	struct Timestamps {
+		SimTime t[4];
+	} timestamps;
+
 	void sendDelayReq(const MACAddress& masterMAC);
 
 protected:

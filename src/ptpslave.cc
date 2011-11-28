@@ -9,6 +9,11 @@ Define_Module(PtpSlave);
 void PtpSlave::initialize()
 {
 	clock = SoftwareClock::findFirstClock(getParentModule());
+
+	WATCH(timestamps.t[0]);
+	WATCH(timestamps.t[1]);
+	WATCH(timestamps.t[2]);
+	WATCH(timestamps.t[3]);
 }
 
 void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
@@ -46,6 +51,19 @@ void PtpSlave::handleMessage(cMessage* msg)
 		EV << "delay: " << (ptp->getTrx() - ptp->getTtx()) << '\n';
 
 
+			timestamps.t[0] = ptp->getTtx();
+			timestamps.t[1] = ptp->getTrx();
+
+			break;
+
+		case Ptp::Delay_Resp:
+			timestamps.t[2] = ptp->getTtx();
+			timestamps.t[3] = ptp->getTrx();
+
+			break;
+
+		default:
+			break;
 		}
 	}
 
