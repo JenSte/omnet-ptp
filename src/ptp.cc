@@ -5,14 +5,18 @@
 static PtpPacket* newPtpPacket(const MACAddress& dest, Ptp::FrameType type)
 {
 	const char* name = NULL;
+	int64 length = 0;
+
+	// the length values are taken from section D.1.3.2 and D.1.3.4 of the standard
 
 	switch (type) {
-	case Ptp::Sync:       name = "ptp sync packet";       break;
-	case Ptp::Delay_Req:  name = "ptp delay_req packet";  break;
-	case Ptp::Delay_Resp: name = "ptp delay_resp packet"; break;
+	case Ptp::Sync:       name = "ptp sync packet";       length = 126; break;
+	case Ptp::Delay_Req:  name = "ptp delay_req packet";  length = 126; break;
+	case Ptp::Delay_Resp: name = "ptp delay_resp packet"; length =  63; break;
 	}
 
 	PtpPacket* p = new PtpPacket(name, IEEE802CTRL_DATA);
+	p->setByteLength(length);
 	p->setType(type);
 
 	Ieee802Ctrl* c = new Ieee802Ctrl();
