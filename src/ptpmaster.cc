@@ -12,7 +12,8 @@ PtpMaster::PtpMaster()
 
 void PtpMaster::sendSync()
 {
-	PtpPacket* p = new PtpPacket("ptp sync packet", Ptp::Sync);
+	PtpPacket* p = new PtpPacket("ptp sync packet", IEEE802CTRL_DATA);
+	p->setType(Ptp::Sync);
 
 	// p->ttx is not set, the phy does that for us
 

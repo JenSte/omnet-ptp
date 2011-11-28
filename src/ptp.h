@@ -3,7 +3,7 @@
 
 namespace Ptp
 {
-	enum Frames {
+	enum FrameType {
 		Sync,
 		Delay_Req,
 		Delay_Resp
