@@ -15,6 +15,9 @@ class SoftwareClock: public cSimpleModule
 	/// and simulation time.
 	cOutVector deviationVector;
 
+	/// Vector to record the factor.
+	cOutVector factorVector;
+
 protected:
 	/// Initializes the module.
 	virtual void initialize();

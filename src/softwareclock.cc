@@ -14,6 +14,8 @@ void SoftwareClock::initialize()
 
 	deviationVector.setName("time_deviation");
 	deviationVector.setUnit("s");
+
+	factorVector.setName("factor");
 }
 
 SimTime SoftwareClock::getSWtime()
@@ -29,6 +31,8 @@ SimTime SoftwareClock::getSWtime()
 void SoftwareClock::setFactor(double f)
 {
 	factor = f;
+
+	factorVector.record(f);
 }
 
 SoftwareClock* SoftwareClock::findFirstClock(const cModule* parent)
