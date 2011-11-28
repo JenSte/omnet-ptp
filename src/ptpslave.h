@@ -18,7 +18,14 @@ class PtpSlave: public cSimpleModule
 		SimTime t[4];
 	} timestamps;
 
+	// last measured offset from the master clock
+	double offset;
+
+	cOutVector offsetVector;
+
 	void sendDelayReq(const MACAddress& masterMAC);
+
+	void correct();
 
 protected:
 	void initialize();
