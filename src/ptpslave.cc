@@ -11,17 +11,11 @@ void PtpSlave::initialize()
 
 void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
 {
-	PtpPacket* p = new PtpPacket("ptp delay_req packet", IEEE802CTRL_DATA);
-	p->setType(Ptp::Delay_Req);
+	PtpPacket* p = Ptp::newDelayReqPacket(masterMAC);
 
 	// gets overwritten by the phy when hardware
 	// timestamping is used
 	p->setTtx(clock->getSWtime());
-
-	Ieee802Ctrl* c = new Ieee802Ctrl();
-	c->setDest(masterMAC);
-	c->setEtherType(Ptp::Ethertype);
-	p->setControlInfo(c);
 
 	send(p, "port$o");
 }

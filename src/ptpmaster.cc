@@ -12,15 +12,9 @@ PtpMaster::PtpMaster()
 
 void PtpMaster::sendSync()
 {
-	PtpPacket* p = new PtpPacket("ptp sync packet", IEEE802CTRL_DATA);
-	p->setType(Ptp::Sync);
+	PtpPacket* p = Ptp::newSyncPacket(MACAddress::BROADCAST_ADDRESS);
 
 	// p->ttx is not set, the phy does that for us
-
-	Ieee802Ctrl* c = new Ieee802Ctrl();
-	c->setDest(MACAddress::BROADCAST_ADDRESS);
-	c->setEtherType(Ptp::Ethertype);
-	p->setControlInfo(c);
 
 	send(p, "port$o");
 }
