@@ -3,6 +3,8 @@
 
 #include <omnetpp.h>
 
+class PtpPacket;
+
 class PtpMaster: public cSimpleModule
 {
 	SimTime syncInterval;
@@ -10,6 +12,8 @@ class PtpMaster: public cSimpleModule
 	cMessage* selfMsg;
 
 	void sendSync();
+
+	void answerDelayReq(const PtpPacket* delayReq);
 
 protected:
 	void initialize();

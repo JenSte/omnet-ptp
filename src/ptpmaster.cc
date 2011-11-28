@@ -19,6 +19,23 @@ void PtpMaster::sendSync()
 	send(p, "port$o");
 }
 
+void PtpMaster::answerDelayReq(const PtpPacket* delayReq)
+{
+	Ieee802Ctrl* c = check_and_cast<Ieee802Ctrl*>(delayReq->getControlInfo());
+
+	MACAddress slaveMAC = c->getSrc();
+
+	PtpPacket* p = Ptp::newDelayRespPacket(slaveMAC);
+
+	// just send back the timestamps
+	// (the timestamping phy doesn't overwrite timestamps
+	// in a Delay_Resp packet)
+	p->setTtx(delayReq->getTtx());
+	p->setTrx(delayReq->getTrx());
+
+	send(p, "port$o");
+}
+
 void PtpMaster::initialize()
 {
 	if (NULL == selfMsg)
@@ -35,6 +52,12 @@ void PtpMaster::handleMessage(cMessage* msg)
 		sendSync();
 
 		scheduleAt(simTime() + syncInterval, msg);
-	} else
+	} else {
+		if (PtpPacket* ptp = dynamic_cast<PtpPacket*>(msg)) {
+			if (Ptp::Delay_Req == ptp->getType())
+				answerDelayReq(ptp);
+		}
+
 		delete msg;
+	}
 }
