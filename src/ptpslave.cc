@@ -1,6 +1,8 @@
 #include "ptpslave.h"
+#include "ptp.h"
 #include "ptppacket_m.h"
 #include "softwareclock.h"
+#include <Ieee802Ctrl_m.h>
 
 Define_Module(PtpSlave);
 
