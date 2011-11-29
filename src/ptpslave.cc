@@ -6,6 +6,12 @@
 
 Define_Module(PtpSlave);
 
+PtpSlave::PtpSlave()
+{
+	controller.kp = 0.45;
+	controller.ki = 2.6;
+}
+
 void PtpSlave::initialize()
 {
 	clock = SoftwareClock::findFirstClock(getParentModule());
@@ -22,6 +28,12 @@ void PtpSlave::initialize()
 	offsetVector.setUnit("s");
 
 	controllerEnabled = par("controllerEnabled");
+
+	controller.esum = 0.0;
+
+	WATCH(controller.esum);
+	WATCH(controller.kp);
+	WATCH(controller.ki);
 }
 
 void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
@@ -44,6 +56,17 @@ void PtpSlave::correct()
 
 	if (!controllerEnabled)
 		return;
+
+	// PI controller
+	double e = -offset;
+
+	controller.esum += e;
+
+	double Ta = 0.1;
+
+	double y = controller.kp * e + controller.ki * Ta * controller.esum;
+
+	clock->setFactor(y);
 }
 
 void PtpSlave::handleMessage(cMessage* msg)
@@ -65,10 +88,6 @@ void PtpSlave::handleMessage(cMessage* msg)
 			}
 
 			sendDelayReq(masterMAC);
-
-
-		EV << "delay: " << (ptp->getTrx() - ptp->getTtx()) << '\n';
-
 
 			timestamps.t[0] = ptp->getTtx();
 			timestamps.t[1] = ptp->getTrx();

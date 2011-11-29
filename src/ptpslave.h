@@ -23,6 +23,14 @@ class PtpSlave: public cSimpleModule
 	// last measured offset from the master clock
 	double offset;
 
+	struct {
+		double esum;
+
+		double kp;
+
+		double ki;
+	} controller;
+
 	cOutVector offsetVector;
 
 	void sendDelayReq(const MACAddress& masterMAC);
@@ -33,6 +41,9 @@ protected:
 	void initialize();
 
 	virtual void handleMessage(cMessage* msg);
+
+public:
+	PtpSlave();
 };
 
 #endif
