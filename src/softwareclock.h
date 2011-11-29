@@ -9,7 +9,11 @@ class SoftwareClock: public cSimpleModule
 {
 	HardwareClock* clock;
 
+	// factor to correct the hardware time
 	double factor;
+
+	// limit for the correction factor
+	double factorLimit;
 
 	/// Vector to record the deviation between the software
 	/// and simulation time.

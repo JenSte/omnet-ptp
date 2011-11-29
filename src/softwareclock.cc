@@ -10,6 +10,8 @@ void SoftwareClock::initialize()
 
 	factor = 0.0;
 
+	factorLimit = 0.05;
+
 	WATCH_RW(factor);
 
 	deviationVector.setName("time_deviation");
@@ -30,6 +32,11 @@ SimTime SoftwareClock::getSWtime()
 
 void SoftwareClock::setFactor(double f)
 {
+	     if (f >  factorLimit)
+		f =  factorLimit;
+	else if (f < -factorLimit)
+		f = -factorLimit;
+
 	factor = f;
 
 	factorVector.record(f);
