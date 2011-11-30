@@ -4,12 +4,25 @@ Driftsource::~Driftsource()
 {
 }
 
+double Driftsource::nextValue()
+{
+	const double driftLimit = -0.999999;
+
+	double n = next();
+
+	// limit drift to values > -1, so the time can't go back
+	if (n < driftLimit)
+		return driftLimit;
+
+	return n;
+}
+
 ConstantDrift::ConstantDrift(double drift)
 	: drift(drift)
 {
 }
 
-double ConstantDrift::nextValue()
+double ConstantDrift::next()
 {
 	return drift;
 }
@@ -19,7 +32,7 @@ BoundedDrift::BoundedDrift(const cPar& distribution)
 {
 }
 
-double BoundedDrift::nextValue()
+double BoundedDrift::next()
 {
 	return distribution.doubleValue();
 }
@@ -31,9 +44,9 @@ BoundedDriftVariation::BoundedDriftVariation(const cPar& distribution, double ma
 {
 }
 
-double BoundedDriftVariation::nextValue()
+double BoundedDriftVariation::next()
 {
-	double drift = BoundedDrift::nextValue();
+	double drift = BoundedDrift::next();
 
 	double diff = drift - last_drift;
 
