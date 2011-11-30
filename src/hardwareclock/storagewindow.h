@@ -44,6 +44,9 @@ private:
 	/// and simulation time.
 	cOutVector deviationVector;
 
+	// Collects statistics about the drift values.
+	cDoubleHistogram driftHistogram;
+
 	/// The hardware timestamp of the first point after the
 	/// storage window.
 	simtime_t _hardwareTimeEnd;
@@ -69,6 +72,9 @@ public:
 	StorageWindow(const HardwareClock::Properties& properties, Driftsource* source);
 
 	~StorageWindow();
+
+	/// Writes out statistics.
+	void finish();
 
 	/// Updates the storage window.
 	///

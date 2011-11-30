@@ -129,6 +129,12 @@ void HardwareClock::handleMessage(cMessage *msg)
 	}
 }
 
+void HardwareClock::finish()
+{
+	if (storageWindow)
+		storageWindow->finish();
+}
+
 void HardwareClock::updateDisplay()
 {
 	if (!ev.isGUI() || ev.isDisabled()) {

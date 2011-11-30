@@ -13,6 +13,7 @@ StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Drifts
 	driftVector.setName("drift");
 	timeVector.setName("hardware_time");
 	deviationVector.setName("time_deviation");
+	driftHistogram.setName("drift_values");
 
 	timeVector.setUnit("s");
 	deviationVector.setUnit("s");
@@ -31,6 +32,11 @@ StorageWindow::StorageWindow(const HardwareClock::Properties& properties, Drifts
 StorageWindow::~StorageWindow()
 {
 	delete source;
+}
+
+void StorageWindow::finish()
+{
+	driftHistogram.recordAs("drift_distribution");
 }
 
 void StorageWindow::update()
@@ -60,6 +66,8 @@ void StorageWindow::fillRange(std::vector<HoldPoint>::iterator first, std::vecto
 
 void StorageWindow::recordVectors(const simtime_t& realTime, const simtime_t& hardwareTime, double drift)
 {
+	driftHistogram.collect(drift);
+
 	driftVector.recordWithTimestamp(realTime, drift);
 	timeVector.recordWithTimestamp(realTime, hardwareTime);
 	deviationVector.recordWithTimestamp(realTime, hardwareTime - realTime);

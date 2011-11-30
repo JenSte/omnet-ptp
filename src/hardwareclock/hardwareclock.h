@@ -118,6 +118,9 @@ protected:
 	/// Handles the given message.
 	virtual void handleMessage(cMessage *msg);
 
+	/// Writes out statistics.
+	void finish();
+
 public:
 	/// Initializes the hardware clock.
 	HardwareClock();
