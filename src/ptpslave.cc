@@ -30,6 +30,7 @@ void PtpSlave::initialize()
 	controllerEnabled = par("controllerEnabled");
 
 	controller.esum = 0.0;
+	controller.last = SimTime();
 
 	WATCH(controller.esum);
 	WATCH(controller.kp);
@@ -62,7 +63,8 @@ void PtpSlave::correct()
 
 	controller.esum += e;
 
-	double Ta = 0.1;
+	double Ta = (simTime() - controller.last).dbl();
+	controller.last = simTime();
 
 	double y = controller.kp * e + controller.ki * Ta * controller.esum;
 

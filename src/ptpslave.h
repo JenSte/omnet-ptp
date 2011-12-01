@@ -29,6 +29,8 @@ class PtpSlave: public cSimpleModule
 		double kp;
 
 		double ki;
+
+		SimTime last;
 	} controller;
 
 	cOutVector offsetVector;
