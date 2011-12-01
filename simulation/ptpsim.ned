@@ -1,6 +1,7 @@
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.nodes.ethernet.EtherSwitch;
 import ptp.hardwareclock.IHardwareClock;
+import ptp.Jitter;
 import ptp.IPtpClock;
 import ptp.TimestampingPhy;
 import ptp.PtpMaster;
@@ -22,14 +23,18 @@ module PtpNode
 			{ parameters: @display("p=100,200"); }
 		p: <ptpImplementation> like IPtpClock
 			{ parameters: @display("p=200,100"); }
-		ethif: EthernetInterface
+		osJitter: Jitter
 			{ parameters: @display("p=200,200"); }
+		ethif: EthernetInterface
+			{ parameters: @display("p=200,300"); }
 		phy: TimestampingPhy
-			{ parameters: @display("p=300,200"); }
+			{ parameters: @display("p=200,400"); }
 
 	connections:
-		p.port$o --> ethif.netwIn;
-		p.port$i <-- ethif.netwOut;
+		p.port <--> osJitter.upperLayer;
+
+		osJitter.lowerLayer$o --> ethif.netwIn;
+		osJitter.lowerLayer$i <-- ethif.netwOut;
 
 		ethif.phys <--> phy.internal;
 		phy.external <--> eth;
