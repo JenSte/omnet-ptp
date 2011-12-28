@@ -25,15 +25,22 @@ class PtpSlave: public cSimpleModule
 
 	struct {
 		double esum;
+		double esum2;
 
 		double kp;
+		double kp2;
 
-		double ki;
+		double ti1;
+		double ti2;
 
 		SimTime last;
 	} controller;
 
 	cOutVector offsetVector;
+
+	cOutVector tpVector;
+	cOutVector tiVector;
+	cOutVector ti2Vector;
 
 	void sendDelayReq(const MACAddress& masterMAC);
 

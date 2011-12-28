@@ -8,8 +8,10 @@ Define_Module(PtpSlave);
 
 PtpSlave::PtpSlave()
 {
-	controller.kp = 0.45;
-	controller.ki = 2.6;
+	controller.kp  = 0.7;
+	controller.kp2 = 0.7; 
+	controller.ti1 = 0.4;
+	controller.ti2 = 1;
 }
 
 void PtpSlave::initialize()
@@ -27,14 +29,24 @@ void PtpSlave::initialize()
 	offsetVector.setName("offset");
 	offsetVector.setUnit("s");
 
+	tpVector.setName("p part");
+	tpVector.setUnit("s");
+
+	tiVector.setName("i1 part");
+	tiVector.setUnit("s");
+	
+	ti2Vector.setName("i2 part");
+	ti2Vector.setUnit("s");
+
 	controllerEnabled = par("controllerEnabled");
 
 	controller.esum = 0.0;
+	controller.esum2 = 0.0;
 	controller.last = SimTime();
 
 	WATCH(controller.esum);
 	WATCH(controller.kp);
-	WATCH(controller.ki);
+//	WATCH(controller.ki);
 }
 
 void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
@@ -63,10 +75,24 @@ void PtpSlave::correct()
 
 	controller.esum += e;
 
-	double Ta = (simTime() - controller.last).dbl();
-	controller.last = simTime();
+//	double Ta = (simTime() - controller.last).dbl();
+//	controller.last = simTime();
+	double Ta = 0.1;
+//	EV << "Ta: " << Ta << '\n';
 
-	double y = controller.kp * e + controller.ki * Ta * controller.esum;
+	double tp = controller.kp * e;
+	double ti1 = Ta / controller.ti1 * controller.esum;
+
+	controller.esum2 += ti1;
+
+	double tp2 = controller.kp2 * ti1;
+	double ti2 = Ta / controller.ti2 * controller.esum2;
+
+	tpVector.record(tp);
+	tiVector.record(ti1);
+	ti2Vector.record(ti2);
+
+	double y = tp + tp2 + ti2;
 
 	clock->setFactor(y);
 }
