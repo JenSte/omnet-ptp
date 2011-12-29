@@ -8,10 +8,10 @@ Define_Module(PtpSlave);
 
 PtpSlave::PtpSlave()
 {
-	controller.kp  = 0.7;
+	controller.kp  = 0.4;
 	controller.kp2 = 0.7; 
-	controller.ti1 = 0.4;
-	controller.ti2 = 1;
+	controller.ti1 = 0.2;
+	controller.ti2 = 2;
 }
 
 void PtpSlave::initialize()
