@@ -4,6 +4,8 @@
 #include <omnetpp.h>
 #include <MACAddress.h>
 
+#define CONTROLLER_STAGES 3
+
 class SoftwareClock;
 
 class PtpSlave: public cSimpleModule
@@ -20,27 +22,15 @@ class PtpSlave: public cSimpleModule
 
 	bool controllerEnabled;
 
-	// last measured offset from the master clock
-	double offset;
-
 	struct {
-		double esum;
-		double esum2;
-
-		double kp;
-		double kp2;
-
-		double ti1;
-		double ti2;
+		double e[CONTROLLER_STAGES];
+		double r[CONTROLLER_STAGES];
 
 		SimTime last;
 	} controller;
 
-	cOutVector offsetVector;
-
-	cOutVector tpVector;
-	cOutVector tiVector;
-	cOutVector ti2Vector;
+	cOutVector errorVector[CONTROLLER_STAGES];
+	cOutVector offsetVector[CONTROLLER_STAGES];
 
 	void sendDelayReq(const MACAddress& masterMAC);
 
