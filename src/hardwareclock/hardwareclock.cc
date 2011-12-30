@@ -87,6 +87,7 @@ void HardwareClock::initialize()
 		if (hasPar("max_drift_variation"))
 			d = new BoundedDriftVariation(par("drift_distribution"),
 					par("max_drift_variation"),
+					par("start_value"),
 					properties.tint());
 		else
 			d = new BoundedDrift(par("drift_distribution"));

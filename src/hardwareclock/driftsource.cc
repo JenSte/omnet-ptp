@@ -43,10 +43,10 @@ double BoundedDrift::next()
 	return distribution.doubleValue();
 }
 
-BoundedDriftVariation::BoundedDriftVariation(const cPar& distribution, double max_drift_variation, const simtime_t& tint)
+BoundedDriftVariation::BoundedDriftVariation(const cPar& distribution, double max_drift_variation, double start_value, const simtime_t& tint)
 	: BoundedDrift(distribution)
 	, max_drift_change(tint.dbl() * max_drift_variation)
-	, last_drift(0.0)
+	, last_drift(start_value)
 {
 }
 

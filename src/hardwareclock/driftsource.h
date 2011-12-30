@@ -70,8 +70,10 @@ public:
 	///
 	/// \param distribution	A OMNeT++ module parameter that evaluates to a distribution.
 	/// \param max_drift_variation	The maximum value for \f$\frac{d}{dt}drift\f$.
+	/// \param start_value	Value of the drift before the simulation starts (used to limit the
+	///			variation of the first drift value).
 	/// \param tint	Simulation time between two drift values.
-	BoundedDriftVariation(const cPar& distribution, double max_drift_variation, const simtime_t& tint);
+	BoundedDriftVariation(const cPar& distribution, double max_drift_variation, double start_value,  const simtime_t& tint);
 };
 
 #endif

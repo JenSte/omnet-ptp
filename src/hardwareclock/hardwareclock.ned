@@ -25,5 +25,6 @@ simple BoundedDrift extends HardwareClock like IHardwareClock {
 simple BoundedDriftVariation extends HardwareClock like IHardwareClock {
 	parameters:
 		volatile double drift_distribution = default(uniform(-100e-6, 100e-6));
+		double start_value = default(0.0);
 		double max_drift_variation = default(1e-8);
 }
