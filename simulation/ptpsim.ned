@@ -10,7 +10,7 @@ import ptp.SoftwareClock;
 module PtpNode
 {
 	parameters:
-		string ptpImplementation;
+		string ptpImplementationType;
 		string hwClockType;
 
 	gates:
@@ -21,7 +21,7 @@ module PtpNode
 			{ parameters: @display("p=100,100"); }
 		hwClock: <hwClockType> like IHardwareClock
 			{ parameters: @display("p=100,200"); }
-		p: <ptpImplementation> like IPtpClock
+		ptpImplementation: <ptpImplementationType> like IPtpClock
 			{ parameters: @display("p=200,100"); }
 		osJitter: Jitter
 			{ parameters: @display("p=200,200"); }
@@ -31,7 +31,7 @@ module PtpNode
 			{ parameters: @display("p=200,400"); }
 
 	connections:
-		p.port <--> osJitter.upperLayer;
+		ptpImplementation.port <--> osJitter.upperLayer;
 
 		osJitter.lowerLayer$o --> ethif.netwIn;
 		osJitter.lowerLayer$i <-- ethif.netwOut;
@@ -45,14 +45,14 @@ module PtpMasterNode extends PtpNode
 	parameters:
 		hwClockType = "ConstantDrift";
 		hwClock.constant_drift = 0;
-		ptpImplementation = "PtpMaster";
+		ptpImplementationType = "PtpMaster";
 }
 
 module PtpSlaveNode extends PtpNode
 {
 	parameters:
 		hwClockType = default("BoundedDriftVariation");
-		ptpImplementation = "PtpSlave";
+		ptpImplementationType = "PtpSlave";
 }
 
 network PtpSimNetwork
