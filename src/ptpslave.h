@@ -32,12 +32,17 @@ class PtpSlave: public cSimpleModule
 	cOutVector errorVector[CONTROLLER_STAGES];
 	cOutVector offsetVector[CONTROLLER_STAGES];
 
+	cDoubleHistogram msDelay;
+	cDoubleHistogram smDelay;
+
 	void sendDelayReq(const MACAddress& masterMAC);
 
 	void correct();
 
 protected:
 	void initialize();
+
+	void finish();
 
 	virtual void handleMessage(cMessage* msg);
 

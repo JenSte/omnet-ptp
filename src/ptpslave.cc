@@ -8,6 +8,8 @@
 Define_Module(PtpSlave);
 
 PtpSlave::PtpSlave()
+	: msDelay("master_slave_delay", 100)
+	, smDelay("slave_master_delay", 100)
 {
 	controller.r[0] =  1;
 	controller.r[1] = 12.5;
@@ -40,6 +42,17 @@ void PtpSlave::initialize()
 	controllerEnabled = par("controllerEnabled");
 	memset(controller.e, 0, sizeof(controller.e));
 	controller.last = SimTime();
+
+	// this assumes that the packet delays are
+	// between 1 and 100 micro seconds
+	msDelay.setRange(1e-6, 100e-6);
+	smDelay.setRange(1e-6, 100e-6);
+}
+
+void PtpSlave::finish()
+{
+	msDelay.recordAs("master_slave_delay", "s");
+	smDelay.recordAs("slave_master_delay", "s");
 }
 
 void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
@@ -112,11 +125,15 @@ void PtpSlave::handleMessage(cMessage* msg)
 			timestamps.t[0] = ptp->getTtx();
 			timestamps.t[1] = ptp->getTrx();
 
+			msDelay.collect(timestamps.t[1] - timestamps.t[0]);
+
 			break;
 
 		case Ptp::Delay_Resp:
 			timestamps.t[2] = ptp->getTtx();
 			timestamps.t[3] = ptp->getTrx();
+
+			smDelay.collect(timestamps.t[3] - timestamps.t[2]);
 
 			correct();
 
