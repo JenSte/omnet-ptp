@@ -32,6 +32,8 @@ void PtpMaster::answerDelayReq(const PtpPacket* delayReq)
 	// in a Delay_Resp packet)
 	p->setTtx(delayReq->getTtx());
 	p->setTrx(delayReq->getTrx());
+	p->setRealTtx(delayReq->getRealTtx());
+	p->setRealTrx(delayReq->getRealTrx());
 
 	send(p, "port$o");
 }

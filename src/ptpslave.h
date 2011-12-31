@@ -18,6 +18,9 @@ class PtpSlave: public cSimpleModule
 	// sync (0/1) and delay_resp(2/3) packets
 	struct Timestamps {
 		SimTime t[4];
+
+		SimTime msDelay;
+		SimTime smDelay;
 	} timestamps;
 
 	bool controllerEnabled;
@@ -34,6 +37,12 @@ class PtpSlave: public cSimpleModule
 
 	cDoubleHistogram msDelay;
 	cDoubleHistogram smDelay;
+
+	cOutVector msDelayVector;
+	cOutVector smDelayVector;
+
+	cOutVector msDelayRealVector;
+	cOutVector smDelayRealVector;
 
 	void sendDelayReq(const MACAddress& masterMAC);
 

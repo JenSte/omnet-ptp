@@ -48,6 +48,16 @@ void PtpSlave::initialize()
 	// between 1 and 100 micro seconds
 	msDelay.setRange(1e-6, 100e-6);
 	smDelay.setRange(1e-6, 100e-6);
+
+	msDelayVector.setName("master_slave_delay");
+	msDelayVector.setUnit("s");
+	smDelayVector.setName("slave_master_delay");
+	smDelayVector.setUnit("s");
+
+	msDelayRealVector.setName("real master_slave_delay");
+	msDelayRealVector.setUnit("s");
+	smDelayRealVector.setName("real slave_master_delay");
+	smDelayRealVector.setUnit("s");
 }
 
 void PtpSlave::finish()
@@ -126,7 +136,11 @@ void PtpSlave::handleMessage(cMessage* msg)
 			timestamps.t[0] = ptp->getTtx();
 			timestamps.t[1] = ptp->getTrx();
 
-			msDelay.collect(timestamps.t[1] - timestamps.t[0]);
+			timestamps.msDelay = timestamps.t[1] - timestamps.t[0];
+			msDelay.collect(timestamps.msDelay);
+			msDelayVector.record(timestamps.msDelay);
+
+			msDelayRealVector.record(ptp->getRealTrx() - ptp->getRealTtx());
 
 			break;
 
@@ -134,7 +148,11 @@ void PtpSlave::handleMessage(cMessage* msg)
 			timestamps.t[2] = ptp->getTtx();
 			timestamps.t[3] = ptp->getTrx();
 
-			smDelay.collect(timestamps.t[3] - timestamps.t[2]);
+			timestamps.smDelay = timestamps.t[3] - timestamps.t[2];
+			smDelay.collect(timestamps.smDelay);
+			smDelayVector.record(timestamps.smDelay);
+
+			smDelayRealVector.record(ptp->getRealTrx() - ptp->getRealTtx());
 
 			correct();
 

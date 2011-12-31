@@ -29,25 +29,31 @@ void TimestampingPhy::handleMessage(cMessage *msg)
 	}
 
 	if (ext_i == msg->getArrivalGate()) {
-		if (enabled
-		 && NULL != eth
+		if (NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
 			if (ptp->getType() == Ptp::Sync
 			 || ptp->getType() == Ptp::Delay_Req) {
-				ptp->setTrx(clock->getSWtime());
+				if (enabled)
+					ptp->setTrx(clock->getSWtime());
+
+				// this timestamp is always set by the PHY
+				ptp->setRealTrx(simTime());
 			}
 		}
 
 		send(msg, int_o);
 	} else { // message arrived at internal$i
-		if (enabled
-		 && NULL != eth
+		if (NULL != eth
 		 && Ptp::Ethertype == eth->getEtherType()
 		 && NULL != ptp) {
 			if (ptp->getType() == Ptp::Sync
 			 || ptp->getType() == Ptp::Delay_Req) {
-				ptp->setTtx(clock->getSWtime());
+				if (enabled)
+					ptp->setTtx(clock->getSWtime());
+
+				// this timestamp is always set by the PHY
+				ptp->setRealTtx(simTime());
 			}
 		}
 

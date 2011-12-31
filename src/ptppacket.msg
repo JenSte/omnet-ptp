@@ -12,4 +12,7 @@ packet PtpPacket
 
 	SimTime ttx;
 	SimTime trx;
+
+	SimTime realTtx;
+	SimTime realTrx;
 }
