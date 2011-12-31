@@ -23,7 +23,6 @@ void SoftwareClock::initialize()
 
 SimTime SoftwareClock::getSWtime()
 {
-//	SimTime swt = clock->getHWtime() * (1.0 + factor);
 	SimTime swt = clock->getHWtime() + factor;
 
 	deviationVector.record(swt - simTime());
