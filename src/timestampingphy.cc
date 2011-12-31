@@ -11,6 +11,7 @@ void TimestampingPhy::initialize()
 	enabled = par("enabled");
 
 	clock = SoftwareClock::findFirstClock(getParentModule());
+	EV << "using software clock with id " << clock->getId() << '\n';
 
 	ext_i = gate("external$i");
 	ext_o = gate("external$o");

@@ -7,6 +7,7 @@ Define_Module(SoftwareClock);
 void SoftwareClock::initialize()
 {
 	clock = HardwareClock::findFirstClock(getParentModule());
+	EV << "using hardware clock with id " << clock->getId() << '\n';
 
 	factor = 0.0;
 

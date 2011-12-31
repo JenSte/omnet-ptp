@@ -19,6 +19,7 @@ PtpSlave::PtpSlave()
 void PtpSlave::initialize()
 {
 	clock = SoftwareClock::findFirstClock(getParentModule());
+	EV << "using software clock with id " << clock->getId() << '\n';
 
 	WATCH(timestamps.t[0]);
 	WATCH(timestamps.t[1]);
