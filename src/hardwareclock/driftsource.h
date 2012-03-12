@@ -23,8 +23,6 @@ class ConstantDrift: public Driftsource
 {
 	double drift;
 
-	int step;
-
 protected:
 	double next();
 

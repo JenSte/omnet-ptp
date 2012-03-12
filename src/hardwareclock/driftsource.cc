@@ -19,17 +19,11 @@ double Driftsource::nextValue()
 
 ConstantDrift::ConstantDrift(double drift)
 	: drift(drift)
-	, step(10)
 {
 }
 
 double ConstantDrift::next()
 {
-	if (step) {
-		step--;
-		return 0.0;
-	}
-
 	return drift;
 }
 
