@@ -21,11 +21,6 @@ void PtpSlave::initialize()
 	clock = SoftwareClock::findFirstClock(getParentModule());
 	EV << "using software clock with id " << clock->getId() << '\n';
 
-	WATCH(timestamps.t[0]);
-	WATCH(timestamps.t[1]);
-	WATCH(timestamps.t[2]);
-	WATCH(timestamps.t[3]);
-
 	for (int i = 0; i < CONTROLLER_STAGES; i++) {
 		std::stringstream sse;
 		std::stringstream sso;
@@ -79,8 +74,10 @@ void PtpSlave::sendDelayReq(const MACAddress& masterMAC)
 
 void PtpSlave::correct()
 {
-	double offset = ( (timestamps.t[1] - timestamps.t[0])
-	                - (timestamps.t[3] - timestamps.t[2]) ).dbl() / 2.0;
+//	double offset = ( (timestamps.t[1] - timestamps.t[0])
+//	                - (timestamps.t[3] - timestamps.t[2]) ).dbl() / 2.0;
+//
+	double offset = ( timestamps.msDelay - timestamps.smDelay ).dbl() / 2.0;
 
 	if (!controllerEnabled)
 		return;
@@ -89,9 +86,9 @@ void PtpSlave::correct()
 	// controller
 	//
 
-//	double Ta = (simTime() - controller.last).dbl();
-//	controller.last = simTime();
-	double Ta = 0.1;
+	double Ta = (simTime() - controller.last).dbl();
+	controller.last = simTime();
+//	double Ta = 0.1;
 
 	// offset sum
 	double os = 0.0;
@@ -133,10 +130,7 @@ void PtpSlave::handleMessage(cMessage* msg)
 
 			sendDelayReq(masterMAC);
 
-			timestamps.t[0] = ptp->getTtx();
-			timestamps.t[1] = ptp->getTrx();
-
-			timestamps.msDelay = timestamps.t[1] - timestamps.t[0];
+			timestamps.msDelay = ptp->getTrx() - ptp->getTtx();
 			msDelay.collect(timestamps.msDelay);
 			msDelayVector.record(timestamps.msDelay);
 
@@ -145,10 +139,7 @@ void PtpSlave::handleMessage(cMessage* msg)
 			break;
 
 		case Ptp::Delay_Resp:
-			timestamps.t[2] = ptp->getTtx();
-			timestamps.t[3] = ptp->getTrx();
-
-			timestamps.smDelay = timestamps.t[3] - timestamps.t[2];
+			timestamps.smDelay = ptp->getTrx() - ptp->getTtx();
 			smDelay.collect(timestamps.smDelay);
 			smDelayVector.record(timestamps.smDelay);
 

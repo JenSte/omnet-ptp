@@ -17,8 +17,6 @@ class PtpSlave: public cSimpleModule
 	// the timestamps from the last received
 	// sync (0/1) and delay_resp(2/3) packets
 	struct Timestamps {
-		SimTime t[4];
-
 		SimTime msDelay;
 		SimTime smDelay;
 	} timestamps;
