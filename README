@@ -6,6 +6,13 @@ Simulation of clock synchronization algorithms in the omnet++ framework.
 2011, Jens Steinhauser (e0826623@student.tuwien.ac.at)
 
 
+License
+-------
+
+This program is licensed under the GNU GPL, either version 2 of the license, or
+(at your option) any later version.
+
+
 Installation Instructions
 -------------------------
 
